@@ -1,37 +1,45 @@
+
 import http from "http"
 import express from "express"
 import { Server } from "socket.io"
-const app=express()
-const server=http.createServer(app)
 
-const io=new Server(server,{
+const app = express()
+const server = http.createServer(app)
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://vybe-5xnf.onrender.com",
+    "https://beautiful-jelly-681172.netlify.app"
+]
+
+const io = new Server(server,{
     cors:{
-        origin:"http://localhost:5173",
-        methods:["GET","POST"]
+        origin: allowedOrigins,
+        methods:["GET","POST"],
+        credentials:true
     }
 })
 
-const userSocketMap={}
+const userSocketMap = {}
 
-export const getSocketId=(receiverId)=>{
-return userSocketMap[receiverId]
+export const getSocketId = (receiverId)=>{
+    return userSocketMap[receiverId]
 }
 
 io.on("connection",(socket)=>{
-   const userId=socket.handshake.query.userId
-   if(userId!=undefined){
-    userSocketMap[userId]=socket.id
-   }
+    const userId = socket.handshake.query.userId
 
- io.emit('getOnlineUsers',Object.keys(userSocketMap))  
+    if(userId){
+        userSocketMap[userId] = socket.id
+    }
 
+    io.emit("getOnlineUsers", Object.keys(userSocketMap))
 
-socket.on('disconnect',()=>{
-    delete userSocketMap[userId]
-     io.emit('getOnlineUsers',Object.keys(userSocketMap))  
+    socket.on("disconnect",()=>{
+        delete userSocketMap[userId]
+
+        io.emit("getOnlineUsers", Object.keys(userSocketMap))
+    })
 })
 
-})
-
-
-export {app,io, server}
+export { app, server }
