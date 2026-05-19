@@ -1,5 +1,4 @@
 
-
 import React, { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import SignUp from './pages/SignUp'
@@ -14,8 +13,8 @@ import EditProfile from './pages/EditProfile'
 import Upload from './pages/Upload'
 import getAllPost from './hooks/getAllPost'
 import Loops from './pages/Loops'
-import getAllLoops from './hooks/getAllLoops'
 import Story from './pages/Story'
+import getAllLoops from './hooks/getAllLoops'
 import getAllStories from './hooks/getAllStories'
 import Messages from './pages/Messages'
 import MessageArea from './pages/MessageArea'
@@ -42,12 +41,11 @@ function App() {
   getAllNotifications()
 
   const { userData, notificationData } = useSelector(state => state.user)
-  const { socket } = useSelector(state => state.socket)
 
+  const { socket } = useSelector(state => state.socket)
   const dispatch = useDispatch()
 
   useEffect(() => {
-
     if (userData) {
 
       const socketIo = io(serverUrl, {
@@ -59,7 +57,7 @@ function App() {
 
       dispatch(setSocket(socketIo))
 
-      socketIo.on("getOnlineUsers", (users) => {
+      socketIo.on('getOnlineUsers', (users) => {
         dispatch(setOnlineUsers(users))
         console.log(users)
       })
@@ -78,7 +76,6 @@ function App() {
   }, [userData])
 
   useEffect(() => {
-
     if (socket) {
       socket.on("newNotification", (noti) => {
         dispatch(setNotificationData([...notificationData, noti]))
