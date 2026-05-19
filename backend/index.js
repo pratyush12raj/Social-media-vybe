@@ -27,6 +27,10 @@ app.use("/api/loop",loopRouter)
 app.use("/api/story",storyRouter)
 app.use("/api/message",messageRouter)
 
+app.get("/",(req,res)=>{
+    res.send("Backend works")
+})
+
 
 server.listen(port , ()=>{
     connectDb()
